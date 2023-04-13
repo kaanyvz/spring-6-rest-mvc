@@ -7,6 +7,9 @@ import org.springframework.util.StringUtils;
 import java.time.LocalDateTime;
 import java.util.*;
 
+/**
+ * Created by jt, Spring Framework Guru.
+ */
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
@@ -44,23 +47,28 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void updateCustomerById(UUID customerId, CustomerDTO customer) {
-        CustomerDTO existing = customerMap.get(customerId);
-        existing.setName(customer.getName());
-    }
-
-    @Override
-    public void deleteCustomerById(UUID customerId) {
-        customerMap.remove(customerId);
-    }
-
-    @Override
-    public void patchCustomerById(UUID customerId, CustomerDTO customer) {
+    public Optional<CustomerDTO> patchCustomerById(UUID customerId, CustomerDTO customer) {
         CustomerDTO existing = customerMap.get(customerId);
 
-        if(StringUtils.hasText(customer.getName())){
+        if (StringUtils.hasText(customer.getName())) {
             existing.setName(customer.getName());
         }
+
+        return Optional.of(existing);
+    }
+
+    @Override
+    public Boolean deleteCustomerById(UUID customerId) {
+        customerMap.remove(customerId);
+
+        return true;
+    }
+
+    @Override
+    public Optional<CustomerDTO> updateCustomerById(UUID customerId, CustomerDTO customer) {
+        CustomerDTO existing = customerMap.get(customerId);
+        existing.setName(customer.getName());
+        return Optional.of(existing);
     }
 
     @Override
