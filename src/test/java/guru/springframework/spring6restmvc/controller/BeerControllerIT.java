@@ -16,11 +16,10 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 class BeerControllerIT {
-
     @Autowired
     BeerController beerController;
 
@@ -30,9 +29,10 @@ class BeerControllerIT {
     @Autowired
     BeerMapper beerMapper;
 
+
     @Test
-    void testDeleteByIdNotFound(){
-        assertThrows(NotFoundException.class, () ->{
+    void testDeleteByIDNotFound() {
+        assertThrows(NotFoundException.class, () -> {
             beerController.deleteById(UUID.randomUUID());
         });
     }
@@ -40,7 +40,7 @@ class BeerControllerIT {
     @Rollback
     @Transactional
     @Test
-    void deleteByIdFound(){
+    void deleteByIdFound() {
         Beer beer = beerRepository.findAll().get(0);
 
         ResponseEntity responseEntity = beerController.deleteById(beer.getId());
@@ -50,8 +50,8 @@ class BeerControllerIT {
     }
 
     @Test
-    void testUpdateNotFound(){
-        assertThrows(NotFoundException.class, () ->{
+    void testUpdateNotFound() {
+        assertThrows(NotFoundException.class, () -> {
             beerController.updateById(UUID.randomUUID(), BeerDTO.builder().build());
         });
     }
@@ -59,7 +59,7 @@ class BeerControllerIT {
     @Rollback
     @Transactional
     @Test
-    void updateExistingBeer(){
+    void updateExistingBeer() {
         Beer beer = beerRepository.findAll().get(0);
         BeerDTO beerDTO = beerMapper.beerToBeerDto(beer);
         beerDTO.setId(null);
@@ -72,14 +72,18 @@ class BeerControllerIT {
 
         Beer updatedBeer = beerRepository.findById(beer.getId()).get();
         assertThat(updatedBeer.getBeerName()).isEqualTo(beerName);
-
     }
 
+    @Rollback
+    @Transactional
     @Test
-    void saveNewBeerTest(){
-        BeerDTO beerDTO = BeerDTO.builder().beerName("New Beer").build();
+    void saveNewBeerTest() {
+        BeerDTO beerDTO = BeerDTO.builder()
+                .beerName("New Beer")
+                .build();
 
         ResponseEntity responseEntity = beerController.handlePost(beerDTO);
+
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(201));
         assertThat(responseEntity.getHeaders().getLocation()).isNotNull();
 
@@ -87,19 +91,18 @@ class BeerControllerIT {
         UUID savedUUID = UUID.fromString(locationUUID[4]);
 
         Beer beer = beerRepository.findById(savedUUID).get();
-
         assertThat(beer).isNotNull();
     }
 
     @Test
-    void testBeerIdNotFound(){
-        assertThrows(NotFoundException.class, () ->{
+    void testBeerIdNotFound() {
+        assertThrows(NotFoundException.class, () -> {
             beerController.getBeerById(UUID.randomUUID());
         });
     }
 
     @Test
-    void testGetById(){
+    void testGetById() {
         Beer beer = beerRepository.findAll().get(0);
 
         BeerDTO dto = beerController.getBeerById(beer.getId());
@@ -108,25 +111,22 @@ class BeerControllerIT {
     }
 
     @Test
-    void testListBeers(){
+    void testListBeers() {
         List<BeerDTO> dtos = beerController.listBeers();
 
         assertThat(dtos.size()).isEqualTo(3);
-     }
+    }
+
     @Rollback
     @Transactional
     @Test
-    void testEmptyList(){
+    void testEmptyList() {
         beerRepository.deleteAll();
         List<BeerDTO> dtos = beerController.listBeers();
 
         assertThat(dtos.size()).isEqualTo(0);
     }
-
 }
-
-
-
 
 
 
