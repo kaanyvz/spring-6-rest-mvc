@@ -3,9 +3,7 @@ package guru.springframework.spring6restmvc.bootstrap;
 import guru.springframework.spring6restmvc.entities.Beer;
 import guru.springframework.spring6restmvc.entities.Customer;
 import guru.springframework.spring6restmvc.model.BeerCSVRecord;
-import guru.springframework.spring6restmvc.model.BeerDTO;
 import guru.springframework.spring6restmvc.model.BeerStyle;
-import guru.springframework.spring6restmvc.model.CustomerDTO;
 import guru.springframework.spring6restmvc.repositories.BeerRepository;
 import guru.springframework.spring6restmvc.repositories.CustomerRepository;
 import guru.springframework.spring6restmvc.services.BeerCsvService;
@@ -27,7 +25,6 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 public class BootstrapData implements CommandLineRunner {
-    
     private final BeerRepository beerRepository;
     private final CustomerRepository customerRepository;
     private final BeerCsvService beerCsvService;
@@ -35,11 +32,9 @@ public class BootstrapData implements CommandLineRunner {
     @Transactional
     @Override
     public void run(String... args) throws Exception {
-        
         loadBeerData();
         loadCsvData();
         loadCustomerData();
-        
     }
 
     private void loadCsvData() throws FileNotFoundException {
@@ -63,18 +58,18 @@ public class BootstrapData implements CommandLineRunner {
                 };
 
                 beerRepository.save(Beer.builder()
-                        .beerName(StringUtils.abbreviate(beerCSVRecord.getBeer(), 50))
-                        .beerStyle(beerStyle)
-                        .price(BigDecimal.TEN)
-                        .upc(beerCSVRecord.getRow().toString())
-                        .quantityOnHand(beerCSVRecord.getCount())
+                                .beerName(StringUtils.abbreviate(beerCSVRecord.getBeer(), 50))
+                                .beerStyle(beerStyle)
+                                .price(BigDecimal.TEN)
+                                .upc(beerCSVRecord.getRow().toString())
+                                .quantityOnHand(beerCSVRecord.getCount())
                         .build());
             });
         }
     }
 
     private void loadBeerData() {
-        if(beerRepository.count() == 0 ){
+        if (beerRepository.count() == 0){
             Beer beer1 = Beer.builder()
                     .beerName("Galaxy Cat")
                     .beerStyle(BeerStyle.PALE_ALE)
@@ -104,14 +99,17 @@ public class BootstrapData implements CommandLineRunner {
                     .createdDate(LocalDateTime.now())
                     .updateDate(LocalDateTime.now())
                     .build();
+
             beerRepository.save(beer1);
             beerRepository.save(beer2);
             beerRepository.save(beer3);
         }
+
     }
 
     private void loadCustomerData() {
-        if(customerRepository.count() == 0){
+
+        if (customerRepository.count() == 0) {
             Customer customer1 = Customer.builder()
                     .id(UUID.randomUUID())
                     .name("Customer 1")
@@ -135,7 +133,8 @@ public class BootstrapData implements CommandLineRunner {
                     .createdDate(LocalDateTime.now())
                     .updateDate(LocalDateTime.now())
                     .build();
-            customerRepository.saveAll(Arrays.asList(customer1,customer2,customer3));
+
+            customerRepository.saveAll(Arrays.asList(customer1, customer2, customer3));
         }
 
     }

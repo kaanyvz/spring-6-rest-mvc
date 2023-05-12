@@ -51,4 +51,5 @@ public class BeerCSVRecord {
 
     @CsvBindByName
     private String label;
+
 }

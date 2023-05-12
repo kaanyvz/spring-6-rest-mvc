@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+
 @Builder
 @Getter
 @Setter
@@ -42,8 +43,8 @@ public class Category {
     @Builder.Default
     @ManyToMany
     @JoinTable(name = "beer_category",
-            joinColumns = @JoinColumn(name = "category_id"),
-            inverseJoinColumns = @JoinColumn(name = "beer_id"))
+      joinColumns = @JoinColumn(name = "category_id"),
+      inverseJoinColumns = @JoinColumn(name = "beer_id"))
     private Set<Beer> beers = new HashSet<>();
 
 
